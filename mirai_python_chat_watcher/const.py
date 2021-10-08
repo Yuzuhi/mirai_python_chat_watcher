@@ -1,5 +1,0 @@
-MIRAI_VERIFY = "/verify"
-MIRAI_BIND = "/bind"
-MIRAI_RELEASE = "/release"
-MIRAI_GET_MEMBER_LIST = "/memberList?sessionKey=%s&target=%d"
-MIRAI_GET_GROUP_LIST = "/groupList?sessionKey=%s"
