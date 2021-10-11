@@ -1,5 +1,5 @@
 """mirai"""
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional, Tuple
 from pydantic import BaseModel
 
 
@@ -28,5 +28,6 @@ class Command(BaseModel):
     prefix: str = '/'
     command: str
     api: str
-    func: Callable
+    func: Optional[Callable]
+    params: Optional[Tuple]
     command_type: str = "full"

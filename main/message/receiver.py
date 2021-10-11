@@ -1,12 +1,14 @@
 import asyncio
 import json
-from typing import Optional, Dict
+from typing import Optional, Dict, AsyncIterable
 
 import aiohttp
 
 from exceptions.exc import AuthorizeException
 from main.message import const
 from main.message.base import MessageBase
+from modles.constant import GroupMessageType
+from modles.messages import GroupMessage, GroupSender, MessageChain
 from utils.queue import Queue
 
 
@@ -23,12 +25,28 @@ class MessageReceiver(MessageBase):
                 await asyncio.sleep(5)
 
         while True:
-            new_msg = await self._get_last_msg(session_key)
-            if new_msg:
-                queue.append(new_msg)
+            async for new_msg in self._get_last_msg(session_key):
+                if new_msg["type"] == GroupMessageType:
+                    sender = new_msg["sender"]
+
+                    new_model = GroupMessage(
+                        sender=GroupSender(
+                            id=sender["id"],
+                            memberName=sender["memberName"],
+                            specialTitle=sender["specialTitle"],
+                            permission=sender["permission"],
+                            joinTimestamp=sender["joinTimestamp"],
+                            lastSpeakTimestamp=sender["lastSpeakTimestamp"],
+                            muteTimeRemaining=sender["muteTimeRemaining"]
+                        ),
+                        message_chain=MessageChain(messages=new_msg["messageChain"])
+                    )
+
+                    queue.append(new_model)
+
             await asyncio.sleep(interval)
 
-    async def _get_last_msg(self, session_key: str, count: int = 10) -> Optional[Dict]:
+    async def _get_last_msg(self, session_key: str, count: int = 10) -> AsyncIterable:
         """从mirai-api-http缓存区获取聊天记录"""
         async with aiohttp.ClientSession() as session:
             async with session.get(self.url + const.MIRAI_FETCH_LATEST_MESSAGE % (session_key, count),
@@ -39,4 +57,4 @@ class MessageReceiver(MessageBase):
         if result["code"] != 0:
             return
 
-        return result["data"]
+        yield result["data"]

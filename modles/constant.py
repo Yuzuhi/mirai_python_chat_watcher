@@ -1,0 +1,1 @@
+GroupMessageType = "GroupMessage"

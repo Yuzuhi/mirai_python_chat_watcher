@@ -2,9 +2,7 @@ from typing import Callable, Optional, List, Dict, Any
 
 from pydantic import BaseModel
 
-def aaa(func,*args,**kwargs):
 
-    return func(*args,**kwargs)
 
 
 class Message(BaseModel):
@@ -43,20 +41,3 @@ class SendGroupMessageEvent(EventBase):
     quote: Optional[int]
     message: Message = Message()
 
-
-def test(x, y, z):
-    return str(x + y + z)
-
-print(aaa(test,1,2,3))
-
-
-m = SendGroupMessageEvent(
-    command="haha",
-    api="hehe",
-    target=123,
-    func=test,
-    param=(5, 4, 3)
-)
-
-m.message.text = m.func(*m.param)
-print(m.message)

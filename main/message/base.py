@@ -19,8 +19,7 @@ class MessageBase:
         self.authKey: str = auth_key
         # bot的QQ号
         self.bot_qq: int = bot_qq
-        # 目标群的群号,用,分割
-        self.groups: List[int] = await self.get_groups()
+
 
     async def authorize(self) -> str:
         # mirai_bot的验证与绑定
