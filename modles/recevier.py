@@ -7,8 +7,9 @@ from typing import List
 
 import aiohttp
 
+from exceptions.exc import AuthorizeException
 from main.message import const
-from exc import AuthorizeException
+
 
 
 class MessageReceiver:
