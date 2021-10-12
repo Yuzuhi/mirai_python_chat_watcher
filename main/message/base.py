@@ -11,15 +11,14 @@ from main.message import const
 
 class MessageBase:
 
-    def __init__(self, url: str, port: str, auth_key: str, bot_qq: int):
+    def __init__(self, url: str, port: int, auth_key: str, bot_qq: int):
 
         # miral bot项目的url
-        self.url: str = url + ":" + port
+        self.url: str = f"{url}:{port}"
         # mirai http的auth key
         self.authKey: str = auth_key
         # bot的QQ号
         self.bot_qq: int = bot_qq
-
 
     async def authorize(self) -> str:
         # mirai_bot的验证与绑定

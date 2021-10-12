@@ -9,21 +9,15 @@ import aiohttp
 
 from exceptions.exc import AuthorizeException
 from main.message import const
+from main.message.base import MessageBase
 
 
+class MessageReceiver(MessageBase):
 
-class MessageReceiver:
-
-    def __init__(self, url: str, port: str, auth_key: str, bot_qq: int, command_prefix: str = "/"):
+    def __init__(self, url: str, port: int, auth_key: str, bot_qq: int, command_prefix: str = "/"):
 
         # miral bot项目的url
-        self.url: str = url + ":" + port
-        # mirai http的auth key
-        self.authKey: str = auth_key
-        # bot的QQ号
-        self.bot_qq: int = bot_qq
-        # 目标群的群号,用,分割
-        self.groups: List[int] = await self.get_groups()
+        super().__init__(url, port, auth_key, bot_qq)
         # mirai_bot命令识别符
         self.command_prefix: str = command_prefix
 
@@ -104,9 +98,8 @@ class MessageReceiver:
         """mirai_bot消息监听"""
         pass
 
-    def add_event(self,):
+    def add_event(self, ):
         """配置mirai_bot的监听事件"""
-
 
     async def send(self, msg: str, session_key: str):
         # 向qq群发送消息

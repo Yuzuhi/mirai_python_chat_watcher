@@ -1,1 +1,2 @@
 GroupMessageType = "GroupMessage"
+FriendMessageType = "FriendMessage"

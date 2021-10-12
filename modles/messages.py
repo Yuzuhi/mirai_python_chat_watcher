@@ -3,8 +3,6 @@ from typing import List
 from pydantic import BaseModel
 
 
-
-
 class MessageChain(BaseModel):
     messages: List
 
@@ -24,8 +22,19 @@ class GroupSender(BaseModel):
     # },
 
 
+class FriendSender(BaseModel):
+    id: int
+    nickname: str
+    remark: str
+
+
 class GroupMessage(BaseModel):
     type: str = "GroupMessage"
     sender: GroupSender
-    message_chain: MessageChain
+    message_chain: List
 
+
+class FriendMessage(BaseModel):
+    type: str = "FriendMessage"
+    sender: GroupSender
+    message_chain: List

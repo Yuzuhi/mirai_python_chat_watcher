@@ -1,10 +1,10 @@
-from main.message.handler import MessageHandler
+from main.message.handler import CommandHandler
 from modles.messages import GroupMessage
 
 import time
 
 
-async def get_dota2_record_by_qq(group_message: GroupMessage, date):
+async def get_dota2_record_by_qq(date):
     # 1 获取qq号
     x = group_message.sender.id
     print(x)
@@ -14,10 +14,12 @@ async def get_dota2_record_by_qq(group_message: GroupMessage, date):
 
 
 if __name__ == '__main__':
-    date = time.time()
-    handler = MessageHandler("1", "1", "1", 1)
-
+    # 实例化
+    handler = CommandHandler("1", "1", "1", 1)
+    # 加载命令和func
     handler.add_commands("哈哈", "123", get_dota2_record_by_qq, params=(GroupMessage,1))
+    # 开启任务循环
+    handler.listen()
 
     def listen(get_new_msg,self.command,params):
         while True:

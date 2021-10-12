@@ -1,4 +1,5 @@
 from typing import Any
+from collections import deque
 
 
 class Queue:
@@ -13,3 +14,4 @@ class Queue:
 
     def pop(self) -> Any:
         return self.__list.pop()
+

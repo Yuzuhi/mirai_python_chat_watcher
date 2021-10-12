@@ -1,5 +1,7 @@
+import asyncio
 import json
-from typing import Callable, Dict, Optional, Tuple, Any
+from collections import deque
+from typing import Callable, Dict, Optional, Tuple, Any, Union
 
 import aiohttp
 
@@ -7,23 +9,30 @@ from main.message.base import MessageBase
 from modles.command import Command
 from modles.constant import GroupMessageType
 from modles.events import SendGroupMessageEvent
-from modles.messages import GroupMessage
+from modles.messages import GroupMessage, FriendMessage
 from utils.queue import Queue
 
 
-class MessageHandler(MessageBase):
+class CommandHandler(MessageBase):
     """从缓存区读取mirai bot的消息，并通过自定义的方法来处理并通过http协议发送给mirai-api-http"""
 
-    def __init__(self, url: str, port: str, auth_key: str, bot_qq: int):
+    def __init__(self, url: str, port: int, auth_key: str, bot_qq: int):
 
         super().__init__(url, port, auth_key, bot_qq)
 
         self.commands: Dict[str, Command] = dict()
 
-    async def listen(self, queue: Queue, interval: float = 0.5):
+    async def listen(self, group_msg_buffer: deque, friend_msg_buffer: deque, interval: float = 0.5):
         while True:
-            msg: GroupMessage = queue.pop()
-            if msg.type != GroupMessageType:
+            group_msg: Optional[GroupMessage] = group_msg_buffer.pop()
+            friend_msg: Optional[FriendMessage] = friend_msg_buffer.pop()
+
+            if group_msg:
+                for msg in group_msg.message_chain:
+                    # 查看是否有命令与消息匹配
+
+            if not group_msg and friend_msg:
+                await asyncio.sleep(0.1)
                 continue
 
             for received_msg in msg.message_chain.messages:

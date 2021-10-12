@@ -1,5 +1,6 @@
 import asyncio
 import json
+from collections import deque
 from typing import Optional, Dict, AsyncIterable
 
 import aiohttp
@@ -7,15 +8,14 @@ import aiohttp
 from exceptions.exc import AuthorizeException
 from main.message import const
 from main.message.base import MessageBase
-from modles.constant import GroupMessageType
-from modles.messages import GroupMessage, GroupSender, MessageChain
-from utils.queue import Queue
+from modles.constant import GroupMessageType, FriendMessageType
+from modles.messages import GroupMessage, GroupSender, MessageChain, FriendMessage, FriendSender
 
 
 class MessageReceiver(MessageBase):
     """通过http协议从mirai-api-http读取聊天信息，并且放入缓存区"""
 
-    async def listen(self, queue: Queue, interval: float = 0.1):
+    async def listen(self, group_msg_buffer: deque, friend_msg_buffer: deque, interval: float = 0.1):
         """监听"""
         session_key = ""
         while not session_key:
@@ -39,10 +39,24 @@ class MessageReceiver(MessageBase):
                             lastSpeakTimestamp=sender["lastSpeakTimestamp"],
                             muteTimeRemaining=sender["muteTimeRemaining"]
                         ),
-                        message_chain=MessageChain(messages=new_msg["messageChain"])
+                        message_chain=new_msg["messageChain"]
                     )
 
-                    queue.append(new_model)
+                    group_msg_buffer.append(new_model)
+
+                elif new_msg["type"] == FriendMessageType:
+                    sender = new_msg["sender"]
+
+                    new_model = FriendMessage(
+                        sender=FriendSender(
+                            id=sender["id"],
+                            nickname=sender["nickname"],
+                            remark=sender["remark"]
+                        ),
+                        message_chain=new_msg["messageChain"]
+                    )
+
+                    friend_msg_buffer.append(new_model)
 
             await asyncio.sleep(interval)
 
