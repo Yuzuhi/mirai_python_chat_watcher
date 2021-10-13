@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from pydantic import BaseModel
 
@@ -31,7 +31,7 @@ class FriendSender(BaseModel):
 class GroupMessage(BaseModel):
     type: str = "GroupMessage"
     sender: GroupSender
-    message_chain: List
+    message_chain: List[Dict[str, str]]
 
 
 class FriendMessage(BaseModel):

@@ -22,7 +22,26 @@ class CommandHandler(MessageBase):
 
         self.commands: Dict[str, Command] = dict()
 
-    async def listen(self, group_msg_buffer: deque, friend_msg_buffer: deque, interval: float = 0.5):
+    async def listen(
+            self, group_msg_buffer: deque,
+            friend_msg_buffer: deque,
+            group_chat_commands: Dict[str, Command],
+            friend_chat_commands: Dict[str, Command],
+            interval: float = 0.5
+    ):
+
+        """
+
+        :param group_msg_buffer: 保存群聊消息的列表
+        :param friend_msg_buffer: 保存好友消息的列表
+        :param group_chat_commands: 保存群聊消息命令的字典
+        :param friend_chat_commands: 保存个人消息命令的字典
+        :param interval: 每次循环休息时间
+        :return:
+        """
+
+
+
         while True:
             group_msg: Optional[GroupMessage] = group_msg_buffer.pop()
             friend_msg: Optional[FriendMessage] = friend_msg_buffer.pop()
@@ -30,6 +49,11 @@ class CommandHandler(MessageBase):
             if group_msg:
                 for msg in group_msg.message_chain:
                     # 查看是否有命令与消息匹配
+                    for command in group_chat_commands.keys():
+                        # 匹配到命令,执行函数
+                        if msg["text"].startswith(group_chat_commands[command].command):
+                            pass
+
 
             if not group_msg and friend_msg:
                 await asyncio.sleep(0.1)
@@ -77,6 +101,7 @@ class CommandHandler(MessageBase):
         command_model = Command(
             prefix=prefix,
             command=command,
+
             api=api,
             func=func,
             params=params,

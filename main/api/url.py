@@ -1,0 +1,6 @@
+MIRAI_VERIFY_URL = "/verify"
+MIRAI_BIND_URL = "/bind"
+MIRAI_RELEASE_URL = "/release"
+MIRAI_GET_MEMBER_LIST_URL = "/memberList?sessionKey=%s&target=%d"
+MIRAI_GET_GROUP_LIST_URL = "/groupList?sessionKey=%s"
+MIRAI_FETCH_LATEST_MESSAGE_URL = "/fetchLatestMessage?sessionKey=%s&count=%d"

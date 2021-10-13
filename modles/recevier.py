@@ -11,8 +11,8 @@ from exceptions.exc import AuthorizeException
 from main.message import const
 from main.message.base import MessageBase
 
-
-class MessageReceiver(MessageBase):
+#
+# class MessageReceiver(MessageBase):
 
     def __init__(self, url: str, port: int, auth_key: str, bot_qq: int, command_prefix: str = "/"):
 

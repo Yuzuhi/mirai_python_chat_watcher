@@ -6,7 +6,6 @@ from typing import Optional, Dict, AsyncIterable
 import aiohttp
 
 from exceptions.exc import AuthorizeException
-from main.message import const
 from main.message.base import MessageBase
 from modles.constant import GroupMessageType, FriendMessageType
 from modles.messages import GroupMessage, GroupSender, MessageChain, FriendMessage, FriendSender
