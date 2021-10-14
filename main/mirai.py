@@ -2,8 +2,10 @@ from main.message.handler import CommandHandler
 from main.message.receiver import MessageReceiver
 from modles.command import Command
 
-from typing import Union, Callable, Dict
+from typing import Union, Callable, Dict, Optional, Iterable
 from collections import deque
+
+from modles.messages import GroupMessage, PrivateMessage
 
 
 class MiraiBot:
@@ -22,31 +24,38 @@ class MiraiBot:
         # 保存用于群聊的命令
         self.group_chat_commands: Dict[str, Command] = dict()
         # 保存用于好友聊天的命令
-        self.friend_chat_commands: Dict[str, Command] = dict()
+        self.private_chat_commands: Dict[str, Command] = dict()
+        # 当前循环中的群消息
+        self.group_message: Optional[GroupMessage] = None
+        # 当前循环中的好友消息
+        self.private_message: Optional[PrivateMessage] = None
 
     async def listen(self, interval: float = 0.5):
         """开启miraiBot"""
 
         # 创建事件循环
         # 将接受message的事件加入到事件循环中
-        task =
+
         # 将处理command的事件加入到事件循环中
         pass
+
+    def get_group_message(self) -> Optional[PrivateMessage]:
+        return self.command_handler.group_message
+
+    def get_friend_message(self) -> Optional[PrivateMessage]:
+        return self.command_handler.private_message
 
     def add_command(
             self,
             api: str,
             func: Callable,
             command: str,
-            prefix: str = "/",
+            target_group: Union[str, int, Iterable[int]],
             *args,
-            use_group_message_param: bool = True,
-            use_friend_message_param: bool = True,
-            use_in_group_chat: bool = False,
-            use_in_friend_chat: bool = False
-    ) -> bool:
+            prefix: str = "/",
+            use_in_private_chat: bool = False,
+    ):
         """
-
         :param api: 希望使用的mirai-api-http中的api，目前提供如下api:
                     [
                     "memberList",获取bot指定群中的成员列表
@@ -61,22 +70,14 @@ class MiraiBot:
 
         :param command: the command which is used to trigger your function.
         :param prefix: the string which would help bot to know the real command.
-
         :param args: the arguments used in your function
-        :param use_group_message_param: if group_message_param is used in your function ,you can pass True,
-                                        if you are not sure pass True.
+        :param target_group: pass "*" for all group,pass group number or a bunch of group number to
+                                use this function in specific group.
 
-        :param use_friend_message_param: if friend_message_param is used in your function ,you can pass True,
-                                        if you are not sure pass True.
-
-        :param use_in_friend_chat: when get command from friend_chat , trigger function if this param is True.
-        :param use_in_group_chat: when get command from group_chat , trigger function if this param is True.
+        :param use_in_private_chat: to let bot response your command in private chat.
         """
         if not prefix:
             raise ValueError("you must set a prefix")
-
-        if not use_in_friend_chat and use_in_group_chat:
-            return False
 
         full_command = prefix + command
 
@@ -85,14 +86,11 @@ class MiraiBot:
             api=api,
             func=func,
             params=args,
-            use_group_message_param=use_group_message_param,
-            use_friend_message_param=use_friend_message_param,
+            target_group=target_group,
+            use_in_private_chat=use_in_private_chat,
         )
 
-        if use_in_friend_chat:
-            self.friend_chat_commands[full_command] = new_command
+        self.group_chat_commands[full_command] = new_command
 
-        if use_in_group_chat:
-            self.group_chat_commands[full_command] = new_command
-
-        return True
+        if use_in_private_chat:
+            self.private_chat_commands[full_command] = new_command

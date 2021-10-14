@@ -1,5 +1,5 @@
 """mirai"""
-from typing import Callable, Dict, Optional, Tuple
+from typing import Callable, Dict, Optional, Tuple, Union, Iterable
 from pydantic import BaseModel
 
 
@@ -29,7 +29,5 @@ class Command(BaseModel):
     api: str
     func: Optional[Callable]
     params: Optional[Tuple]
-    use_group_message_param: bool
-    use_friend_message_param: bool
-    # use_in_friend_chat: bool
-    # use_in_group_chat: bool
+    targetGroup: Union[str, int, Iterable[int]]
+    use_in_private_chat: bool

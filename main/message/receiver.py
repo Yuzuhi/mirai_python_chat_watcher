@@ -8,7 +8,7 @@ import aiohttp
 from exceptions.exc import AuthorizeException
 from main.message.base import MessageBase
 from modles.constant import GroupMessageType, FriendMessageType
-from modles.messages import GroupMessage, GroupSender, MessageChain, FriendMessage, FriendSender
+from modles.messages import GroupMessage, GroupSender, MessageChain, PrivateMessage, FriendSender, GroupInfo
 
 
 class MessageReceiver(MessageBase):
@@ -29,6 +29,7 @@ class MessageReceiver(MessageBase):
                     sender = new_msg["sender"]
 
                     new_model = GroupMessage(
+
                         sender=GroupSender(
                             id=sender["id"],
                             memberName=sender["memberName"],
@@ -36,7 +37,14 @@ class MessageReceiver(MessageBase):
                             permission=sender["permission"],
                             joinTimestamp=sender["joinTimestamp"],
                             lastSpeakTimestamp=sender["lastSpeakTimestamp"],
-                            muteTimeRemaining=sender["muteTimeRemaining"]
+                            muteTimeRemaining=sender["muteTimeRemaining"],
+
+                            group=GroupInfo(
+                                id=sender["group"]["id"],
+                                name=sender["group"]["name"],
+                                permission=sender["group"]["permission"]
+
+                            )
                         ),
                         message_chain=new_msg["messageChain"]
                     )
@@ -46,7 +54,7 @@ class MessageReceiver(MessageBase):
                 elif new_msg["type"] == FriendMessageType:
                     sender = new_msg["sender"]
 
-                    new_model = FriendMessage(
+                    new_model = PrivateMessage(
                         sender=FriendSender(
                             id=sender["id"],
                             nickname=sender["nickname"],

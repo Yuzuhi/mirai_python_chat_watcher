@@ -3,16 +3,10 @@ from typing import Callable, Optional, List, Dict, Any
 from pydantic import BaseModel
 
 
-
-
 class Message(BaseModel):
-    type: str = "Plain"
-    text: str = ""
+    type: str
+    text: str
 
-    # class Config:
-    #     json_encoders = {
-    #
-    #     }
 
 
 class EventBase(BaseModel):
@@ -39,5 +33,4 @@ class SendGroupMessageEvent(EventBase):
     """
     target: int
     quote: Optional[int]
-    message: Message = Message()
-
+    message: Message

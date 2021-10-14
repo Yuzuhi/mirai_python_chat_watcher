@@ -1,10 +1,11 @@
 from main.message.handler import CommandHandler
+from main.mirai import MiraiBot
 from modles.messages import GroupMessage
 
 import time
 
 
-async def get_dota2_record_by_qq(date):
+async def get_dota2_record_by_qq(group_message):
     # 1 获取qq号
     x = group_message.sender.id
     print(x)
@@ -15,9 +16,11 @@ async def get_dota2_record_by_qq(date):
 
 if __name__ == '__main__':
     # 实例化
-    handler = CommandHandler("1", "1", "1", 1)
+    handler = MiraiBot("1", 1, "1", 1)
+
+    group_message = handler.get_group_message()
     # 加载命令和func
-    handler.add_commands("哈哈", "123", get_dota2_record_by_qq, params=(GroupMessage,1))
+    handler.add_commands("哈哈", "123", get_dota2_record_by_qq, params=group_message)
     # 开启任务循环
     handler.listen()
 

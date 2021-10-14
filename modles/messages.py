@@ -7,6 +7,12 @@ class MessageChain(BaseModel):
     messages: List
 
 
+class GroupInfo(BaseModel):
+    id: int
+    name: str
+    permission: str
+
+
 class GroupSender(BaseModel):
     id: int
     memberName: str
@@ -15,11 +21,7 @@ class GroupSender(BaseModel):
     joinTimestamp: int
     lastSpeakTimestamp: int
     muteTimeRemaining: int
-    # "group": {
-    #     "id": 321,
-    #     "name": "",
-    #     "permission": "MEMBER",
-    # },
+    group: GroupInfo
 
 
 class FriendSender(BaseModel):
@@ -34,7 +36,19 @@ class GroupMessage(BaseModel):
     message_chain: List[Dict[str, str]]
 
 
-class FriendMessage(BaseModel):
+class SingleGroupMessage(BaseModel):
+    type: str = "GroupMessage"
+    sender: GroupSender
+    message: Dict[str, str]
+
+
+class PrivateMessage(BaseModel):
     type: str = "FriendMessage"
     sender: GroupSender
-    message_chain: List
+    message_chain: List[Dict[str, str]]
+
+
+class SinglePrivateMessage(BaseModel):
+    type: str = "FriendMessage"
+    sender: GroupSender
+    message: Dict[str, str]
