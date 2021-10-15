@@ -6,6 +6,7 @@ from typing import Optional, Dict, AsyncIterable
 import aiohttp
 
 from exceptions.exc import AuthorizeException
+from main.api.api import MIRAI_FETCH_LATEST_MESSAGE
 from main.message.base import MessageBase
 from modles.constant import GroupMessageType, FriendMessageType
 from modles.messages import GroupMessage, GroupSender, MessageChain, PrivateMessage, FriendSender, GroupInfo
@@ -70,7 +71,7 @@ class MessageReceiver(MessageBase):
     async def _get_last_msg(self, session_key: str, count: int = 10) -> AsyncIterable:
         """从mirai-api-http缓存区获取聊天记录"""
         async with aiohttp.ClientSession() as session:
-            async with session.get(self.url + const.MIRAI_FETCH_LATEST_MESSAGE % (session_key, count),
+            async with session.get(self.url + MIRAI_FETCH_LATEST_MESSAGE % (session_key, count),
                                    data=json.dumps(session_key)) as response:
                 # 目前只存储群消息
                 result = await response.json()

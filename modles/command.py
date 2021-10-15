@@ -29,5 +29,11 @@ class Command(BaseModel):
     api: str
     func: Optional[Callable]
     params: Optional[Tuple]
-    targetGroup: Union[str, int, Iterable[int]]
-    use_in_private_chat: bool
+
+
+class PrivateCommand(Command):
+    pass
+
+
+class GroupCommand(Command):
+    pass

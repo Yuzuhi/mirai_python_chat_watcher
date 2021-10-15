@@ -44,7 +44,7 @@ class SingleGroupMessage(BaseModel):
 
 class PrivateMessage(BaseModel):
     type: str = "FriendMessage"
-    sender: GroupSender
+    sender: FriendSender
     message_chain: List[Dict[str, str]]
 
 
